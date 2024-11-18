@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Title>ToneCurve</Title>
+    <Copyright>mes51</Copyright>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Shader\ToneCurve.hlsl" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PixelShader Include="Shader\ToneCurve.hlsl" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.HLSL.CSharpVB" Version="1.0.2" />
+		<PackageReference Include="Vortice.Direct2D1" Version="2.1.8-beta" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\YMM_ToneCurve.SourceGenerator.EffectPropertyGenerator\YMM_ToneCurve.SourceGenerator.EffectPropertyGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="YukkuriMovieMaker.Controls">
+			<HintPath>..\..\YukkuriMovieMaker_v4\YukkuriMovieMaker.Controls.dll</HintPath>
+		</Reference>
+		<Reference Include="YukkuriMovieMaker.Plugin">
+			<HintPath>..\..\YukkuriMovieMaker_v4\YukkuriMovieMaker.Plugin.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="$(IntermediateOutputPath)\Shader\ToneCurve.cso">
+			<LogicalName>ToneCurve_Shader.cso</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="set YMM_PLUGIN_DIR=&quot;$(SolutionDir)..\YukkuriMovieMaker_v4\user\plugin&quot;&#xD;&#xA;&#xD;&#xA;if exist %25YMM_PLUGIN_DIR%25 copy &quot;$(TargetPath)&quot; %25YMM_PLUGIN_DIR%25" />
+	</Target>
+</Project>

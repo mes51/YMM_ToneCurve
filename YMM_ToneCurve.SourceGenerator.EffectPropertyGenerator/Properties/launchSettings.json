@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "プロファイル 1": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\YMM_ToneCurve\\YMM_ToneCurve.csproj"
+    }
+  }
+}

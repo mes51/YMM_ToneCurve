@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CsWinRT1028: Class is not marked partial
+dotnet_diagnostic.CsWinRT1028.severity = none
+
+# アナライザー診断 ID のアナライザー リリースへの追加
+dotnet_diagnostic.RS2000.severity = none

@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="YMM_ToneCurve.View.ToneCurveParametersEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:YMM_ToneCurve.View"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:cv="clr-namespace:YMM_ToneCurve.View.Converter"
+             mc:Ignorable="d" 
+             x:Name="Root"
+             Padding="10"
+             DataContextChanged="UserControl_DataContextChanged"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <sys:Int32 x:Key="Zero">0</sys:Int32>
+        <sys:Int32 x:Key="One">1</sys:Int32>
+        <sys:Int32 x:Key="Two">2</sys:Int32>
+        <sys:Int32 x:Key="Three">3</sys:Int32>
+        <sys:Int32 x:Key="Four">4</sys:Int32>
+
+        <cv:EqualToVisibilityConverter x:Key="EqualToVisibilityConverter"/>
+        <cv:EqualToVisibilityConverter x:Key="InvertedEqualToVisibilityConverter" Inverted="True"/>
+
+        <Style x:Key="BackgroundGridLineStyle" TargetType="{x:Type Line}">
+            <Setter Property="Stroke" Value="DarkGray"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="StrokeDashArray" Value="5,5"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=Root, Path=IsDarkLikeTheme}" Value="True">
+                    <Setter Property="Stroke" Value="Gray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="BackgroundToneCurvePointEditViewStyle" TargetType="{x:Type local:ToneCurvePointEditView}">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="LineWidth" Value="0.5"/>
+            <Setter Property="IsDarkLikeTheme" Value="{Binding ElementName=Root, Path=IsDarkLikeTheme}"/>
+        </Style>
+
+        <Style x:Key="BlackLineBackgroundToneCurvePointEditViewStyle" TargetType="{x:Type local:ToneCurvePointEditView}" BasedOn="{StaticResource BackgroundToneCurvePointEditViewStyle}">
+            <Setter Property="LineBrush" Value="Black"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=Root, Path=IsDarkLikeTheme}" Value="True">
+                    <Setter Property="LineBrush" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="EditableToneCurvePointEditViewStyle" TargetType="{x:Type local:ToneCurvePointEditView}">
+            <Setter Property="IsDarkLikeTheme" Value="{Binding ElementName=Root, Path=IsDarkLikeTheme}"/>
+            <EventSetter Event="BeginEdit" Handler="ToneCurvePointEditView_BeginEdit"/>
+            <EventSetter Event="EndEdit" Handler="ToneCurvePointEditView_EndEdit"/>
+        </Style>
+
+        <Style x:Key="BlackLineEditableToneCurvePointEditViewStyle" TargetType="{x:Type local:ToneCurvePointEditView}" BasedOn="{StaticResource EditableToneCurvePointEditViewStyle}">
+            <Setter Property="LineBrush" Value="Black"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=Root, Path=IsDarkLikeTheme}" Value="True">
+                    <Setter Property="LineBrush" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid x:Name="Wrapper">
+        <Grid HorizontalAlignment="Left" Width="{Binding ElementName=Wrapper, Path=ActualWidth}" MaxWidth="300" d:Width="300">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="編集: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding EditingChannelIndex}">
+                    <ComboBoxItem>RGB</ComboBoxItem>
+                    <ComboBoxItem>R</ComboBoxItem>
+                    <ComboBoxItem>G</ComboBoxItem>
+                    <ComboBoxItem>B</ComboBoxItem>
+                    <ComboBoxItem>A</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+
+            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Height="{Binding ElementName=Wrapper, Path=ActualWidth}" MaxHeight="300" d:Height="300">
+                <Grid ClipToBounds="True">
+                    <Grid x:Name="BackgroundGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Line Grid.Row="0" Grid.ColumnSpan="3" X1="0" Y1="0" X2="{Binding ElementName=BackgroundGrid, Path=ActualWidth}" Y2="0" VerticalAlignment="Bottom" Style="{StaticResource BackgroundGridLineStyle}"/>
+                        <Line Grid.Row="1" Grid.ColumnSpan="3" X1="0" Y1="0" X2="{Binding ElementName=BackgroundGrid, Path=ActualWidth}" Y2="0" VerticalAlignment="Bottom" Style="{StaticResource BackgroundGridLineStyle}"/>
+
+                        <Line Grid.Column="0" Grid.RowSpan="3" X1="0" Y1="0" X2="0" Y2="{Binding ElementName=BackgroundGrid, Path=ActualHeight}" HorizontalAlignment="Right" Style="{StaticResource BackgroundGridLineStyle}"/>
+                        <Line Grid.Column="1" Grid.RowSpan="3" X1="0" Y1="0" X2="0" Y2="{Binding ElementName=BackgroundGrid, Path=ActualHeight}" HorizontalAlignment="Right" Style="{StaticResource BackgroundGridLineStyle}"/>
+                    </Grid>
+
+                    <!-- display only -->
+                    <local:ToneCurvePointEditView Points="{Binding APoints}" IsDashed="True" Visibility="{Binding EditingChannelIndex, Converter={StaticResource InvertedEqualToVisibilityConverter}, ConverterParameter={StaticResource Four}}" Style="{StaticResource BlackLineBackgroundToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding BPoints}" LineBrush="#0000FF" Visibility="{Binding EditingChannelIndex, Converter={StaticResource InvertedEqualToVisibilityConverter}, ConverterParameter={StaticResource Three}}" Style="{StaticResource BackgroundToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding GPoints}" LineBrush="#00FF00" Visibility="{Binding EditingChannelIndex, Converter={StaticResource InvertedEqualToVisibilityConverter}, ConverterParameter={StaticResource Two}}" Style="{StaticResource BackgroundToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding RPoints}" LineBrush="#FF0000" Visibility="{Binding EditingChannelIndex, Converter={StaticResource InvertedEqualToVisibilityConverter}, ConverterParameter={StaticResource One}}" Style="{StaticResource BackgroundToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding RgbPoints}" Visibility="{Binding EditingChannelIndex, Converter={StaticResource InvertedEqualToVisibilityConverter}, ConverterParameter={StaticResource Zero}}" Style="{StaticResource BlackLineBackgroundToneCurvePointEditViewStyle}"/>
+
+                    <!-- editable -->
+                    <local:ToneCurvePointEditView Points="{Binding APoints}" IsDashed="True" Visibility="{Binding EditingChannelIndex, Converter={StaticResource EqualToVisibilityConverter}, ConverterParameter={StaticResource Four}}" Style="{StaticResource BlackLineEditableToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding BPoints}" LineBrush="#0000FF" Visibility="{Binding EditingChannelIndex, Converter={StaticResource EqualToVisibilityConverter}, ConverterParameter={StaticResource Three}}" Style="{StaticResource EditableToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding GPoints}" LineBrush="#00FF00" Visibility="{Binding EditingChannelIndex, Converter={StaticResource EqualToVisibilityConverter}, ConverterParameter={StaticResource Two}}" Style="{StaticResource EditableToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding RPoints}" LineBrush="#FF0000" Visibility="{Binding EditingChannelIndex, Converter={StaticResource EqualToVisibilityConverter}, ConverterParameter={StaticResource One}}" Style="{StaticResource EditableToneCurvePointEditViewStyle}"/>
+                    <local:ToneCurvePointEditView Points="{Binding RgbPoints}" Visibility="{Binding EditingChannelIndex, Converter={StaticResource EqualToVisibilityConverter}, ConverterParameter={StaticResource Zero}}" Style="{StaticResource BlackLineEditableToneCurvePointEditViewStyle}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
